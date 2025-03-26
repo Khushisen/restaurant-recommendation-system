@@ -1,8 +1,8 @@
 from flask import Blueprint, render_template, redirect, url_for, flash,request
 from flask_login import login_user, logout_user, login_required, current_user
 from .models import User
-from app.models import Restaurant
-from .forms import LoginForm, RegisterForm
+from app.models import Restaurant, SuggestedRestaurant
+from app.forms import LoginForm, RegisterForm,SuggestionForm  
 from . import db
 
 main = Blueprint('main', __name__)
@@ -103,8 +103,25 @@ def save_preferences():
 
 @main.route('/suggest', methods=['GET', 'POST'])
 def suggest():
-    if request.method == 'POST':
-        # Handle form submission (save to database)
-        flash('Thanks for your suggestion!', 'success')
-        return redirect(url_for('main.dashboard'))
-    return render_template('suggest.html')
+    form = SuggestionForm()  # Create form instance
+    
+    if form.validate_on_submit():
+        try:
+            suggestion = SuggestedRestaurant(
+                name=form.name.data,
+                city=form.city.data,
+                locality=form.locality.data,
+                cuisine=form.cuisine.data,
+                rating=form.rating.data,
+                comment=form.comment.data,
+                user_email=form.email.data,
+                user_id=current_user.id if current_user.is_authenticated else None
+            )
+            db.session.add(suggestion)
+            db.session.commit()
+            flash('Thank you! Your suggestion has been submitted.', 'success')
+            return redirect(url_for('main.dashboard'))
+        except Exception as e:
+            db.session.rollback()
+            flash('Error submitting suggestion. Please try again.', 'danger')
+    return render_template('suggest.html', form=form)

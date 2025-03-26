@@ -1,6 +1,9 @@
 from . import db, login_manager
 from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
+from datetime import datetime
+from app import db 
+
 
 class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
@@ -41,3 +44,17 @@ class Restaurant(db.Model):
         else:
             return "$$$"
         
+class SuggestedRestaurant(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), nullable=False)
+    city = db.Column(db.String(50), nullable=False)
+    locality = db.Column(db.String(100), nullable=False)
+    cuisine = db.Column(db.String(50), nullable=False)
+    rating = db.Column(db.Float, nullable=False)
+    comment = db.Column(db.Text)
+    user_email = db.Column(db.String(100))
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    date_submitted = db.Column(db.DateTime, default=datetime.utcnow)
+    
+    def __repr__(self):
+        return f"<Suggestion {self.name} ({self.date_submitted})>"
