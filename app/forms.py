@@ -1,6 +1,9 @@
 from flask_wtf import FlaskForm
+from flask_wtf.file import FileField,FileAllowed
 from wtforms import StringField, PasswordField, SubmitField, SelectField, TextAreaField, FloatField
-from wtforms.validators import DataRequired, Email, Length, EqualTo, NumberRange
+from wtforms.validators import DataRequired, Email, Length, EqualTo, NumberRange, Optional
+
+
 
 class LoginForm(FlaskForm):
     email = StringField('Email', validators=[DataRequired(), Email()])
@@ -23,6 +26,8 @@ class SuggestionForm(FlaskForm):
         ('Italian', 'Italian'),
         ('Mexican', 'Mexican')
     ], validators=[DataRequired()])
+    email = StringField('Your Email (optional)', validators=[ Optional(), Email()])
     rating = FloatField('Rating', validators=[DataRequired(), NumberRange(min=1, max=5)])
     comment = TextAreaField('Comments')
     submit = SubmitField('Submit Suggestion')
+    

@@ -2,10 +2,14 @@ from flask import Blueprint, render_template, redirect, url_for, flash,request
 from flask_login import login_user, logout_user, login_required, current_user
 from .models import User
 from app.models import Restaurant, SuggestedRestaurant
-from app.forms import LoginForm, RegisterForm,SuggestionForm  
+from app.forms import LoginForm, RegisterForm,SuggestionForm 
 from . import db
 
+
+
 main = Blueprint('main', __name__)
+
+
 
 @main.route('/')
 def index():
@@ -19,7 +23,7 @@ def login():
         if user and user.check_password(form.password.data):  # Verify hashed password
             login_user(user)
             flash('Logged in successfully!', 'success')
-            return redirect(url_for('main.dashboard'))
+            return redirect(url_for('main.index'))
         else:
             flash('Invalid email or password.', 'danger')
     return render_template('login.html', form=form)
@@ -82,7 +86,7 @@ def recommend():
     
     if not restaurants:
         flash(f"No restaurants found in {city} for {cuisine} cuisine.",'warning')
-        return redirect(url_for('main.dashboard'))
+        return redirect(url_for('main.suggest'))
     
     return render_template('recommendations.html', restaurants=restaurants)
 
@@ -125,3 +129,5 @@ def suggest():
             db.session.rollback()
             flash('Error submitting suggestion. Please try again.', 'danger')
     return render_template('suggest.html', form=form)
+
+
