@@ -3,7 +3,8 @@
 {% block content %}
 <div class="home-hero">
     <div class="hero-content">
-        <h1>Discover Amazing Restaurants</h1>
+        <h1>Welcome To DineMate!</h1>
+        <h2>Discover Amazing Restaurants Here</h2>
         <p>Find the perfect dining experience tailored just for you</p>
         {% if not current_user.is_authenticated %}
             <a href="{{ url_for('main.register') }}" class="btn btn-primary">Get Started</a>
